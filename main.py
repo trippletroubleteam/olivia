@@ -1,34 +1,35 @@
 # flask application to take in messages by the user and feeding it into gpt3 to generate a response that acts like a therapist who helps people with depression
 
 import openai
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, request, url_for
+import os
 
 app = Flask(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("key")
 
 
-@app.route("/", methods=("GET", "POST"))
+@app.route("/", methods=("POST", "GET"))
 def index():
     if request.method == "POST":
-        animal = request.form["animal"]
+        text = request.form["text"]
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt=generate_prompt(animal),
+            prompt=generate_prompt(text),
             temperature=0.6,
+            max_tokens=250,
         )
-        return redirect(url_for("index", result=response.choices[0].text))
+
+        return response.choices[0].text
 
     result = request.args.get("result")
-    return render_template("index.html", result=result)
+    return result
 
 
-def generate_prompt(animal):
-    return """Suggest three names for an animal that is a superhero.
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: {}
-Names:""".format(
-        animal.capitalize()
-    )
+def generate_prompt(text):
+    return f"""You are a therapist who helps people with depression, somone says the following text to you, respond in a kind and comforting way but do not prompt for a response.
+
+            {text}
+            """
+
+
+app.run(port=5000, debug=True, host="0.0.0.0")
