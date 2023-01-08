@@ -21,61 +21,56 @@ from sklearn.utils import shuffle
 from transformers import *
 from transformers import BertTokenizer, TFBertModel, BertConfig
 
+#Parameters with the best results
 loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 metric = tf.keras.metrics.SparseCategoricalAccuracy('accuracy')
 optimizer = tf.keras.optimizers.Adam(learning_rate=2e-5,epsilon=1e-08)
 model_save_path='./model2/bert_model.h5'
+#Tokenizer to convert strings of text into embeddings that can be processed by a neural net, including numerical representations of the word, it's place in the sentence, and how it relates to other nearby words
 bert_tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 labels = ["Not Depressed", "Depressed"]
 
 
-#Cleaning text, removing stop words greatly increases accuracy
-def unicode_to_ascii(s):
-    return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
-
-def clean_stopwords_shortwords(w):
+#Cleaning text
+#Removing unneccesary words increases accuracy
+def clean_stopwords(w):
     stopwords_list=stopwords.words('english')
     words = w.split()
     clean_words = [word for word in words if (word not in stopwords_list) and len(word) > 2]
     return " ".join(clean_words)
 
+
 def preprocess_sentence(w):
-    w = unicode_to_ascii(w.lower().strip())
+    w = w.lower().strip()
     w = re.sub(r"([?.!,¿])", r" ", w)
     w = re.sub(r'[" "]+', " ", w)
     w = re.sub(r"[^a-zA-Z?.!,¿]+", " ", w)
-    w=clean_stopwords_shortwords(w)
-    w=re.sub(r'@\w+', '',w)
+    w = clean_stopwords(w)
+    w = re.sub(r'@\w+', '',w)
     return w
 
 
 def train():
+    #Read data from csv
     data = pd.read_csv("reddit.csv")
 
+    #First 2 posts are not relevant
     data = data.iloc[2:]
 
     print(data.head())
 
-    data=data.reset_index(drop=True)                                             # Reset index after dropping the columns/rows with NaN values
-    data = shuffle(data)                                                         # Shuffle the dataset
-    print('Available labels: ',data.is_depression.unique())                              # Print all the unique labels in the dataset
+    #Prepare data, set aside
+    data=data.reset_index(drop=True)
+    data = shuffle(data)
+    print('Available labels: ',data.is_depression.unique())
+
     data['clean_text']=data['clean_text'].map(preprocess_sentence)
     num_classes=len(data.is_depression.unique())
 
     bert_model = TFBertForSequenceClassification.from_pretrained('bert-base-uncased',num_labels=num_classes)
 
-    sent= 'how to train the model, lets look at how a trained model calculates its prediction.'
-    tokens=bert_tokenizer.tokenize(sent)
-    print(tokens)
-
-    tokenized_sequence= bert_tokenizer.encode_plus(sent,add_special_tokens = True,max_length =30,pad_to_max_length = True,
-    return_attention_mask = True)
-
-    print(bert_tokenizer.decode(tokenized_sequence['input_ids']))
-
     sentences = data['clean_text']
     labels = data['is_depression']
-
 
     input_ids=[]
     attention_masks=[]
@@ -133,10 +128,10 @@ def test(trained_model, sentence):
 
     return score
 
-    
+
 if __name__ == "__main__":
-    #train()
-     model = load_model()
-     while True:
-         text = input('Enter Sentence: ')
-         print(test(model , text))
+    train()
+     # model = load_model()
+     # while True:
+     #     text = input('Enter Sentence: ')
+     #     print(test(model , text))
