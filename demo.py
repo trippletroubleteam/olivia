@@ -19,6 +19,7 @@ nltk.download("stopwords")
 model = model4.load_model()
 
 
+
 st.title("UnisonAI NLP Analysis of Conversations")
 
 
@@ -39,3 +40,5 @@ if text:
     st.subheader("Parent Suggestion:")
 
     st.write(generate_completion(counselor_prompt(text)))
+
+st.caption("This is purely meant as a demonstration of the NLP Model which powers the Unison mobile app.")
