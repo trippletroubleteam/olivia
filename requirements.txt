@@ -1,0 +1,10 @@
+requests
+pandas
+python-dotenv
+tensorflow
+tensorflow-hub
+openai
+scikit-learn
+nltk
+transformers
+python-dotenv
