@@ -28,7 +28,7 @@ text = st.text_input("Enter atleast 5 sentences talking about how you feel")
 if text:
     score = model4.test(model, text)
 
-    st.text("User is at a " + str(round(score/2, 2)) + "%" + " risk of being depressed.")
+    st.text("User's mental health is at " + str(round(score/2, 2)) + "%" + " risk.")
 
     st.progress(score/200)
 
