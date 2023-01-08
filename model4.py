@@ -26,7 +26,7 @@ from pathlib import Path
 loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 metric = tf.keras.metrics.SparseCategoricalAccuracy('accuracy')
 optimizer = tf.keras.optimizers.Adam(learning_rate=2e-5,epsilon=1e-08)
-model_save_path='./models/bert_model.h5'
+model_save_path='./model2/bert_model.h5'
 #Tokenizer to convert strings of text into embeddings that can be processed by a neural net, including numerical representations of the word, it's place in the sentence, and how it relates to other nearby words
 bert_tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 labels = ["Not Depressed", "Depressed"]
