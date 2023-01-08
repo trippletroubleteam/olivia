@@ -2,6 +2,8 @@ import streamlit as st
 import os
 os.environ["OPENAI_KEY"] == st.secrets["OPENAI_KEY"]
 import model4
+import nltk
+nltk.download("stopwords")
 from app import *
 
 model = model4.load_model()
