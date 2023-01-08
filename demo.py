@@ -1,4 +1,5 @@
 import streamlit as st
+os.environ["OPENAI_KEY"] == st.secrets["OPENAI_KEY"]
 import model4
 from app import *
 
