@@ -51,7 +51,7 @@ def therapy_prompt(text):
 
 
 def clean_completion(text):
-    return text.replace("\n", "")
+    return text.replace("\n", "").replace("'", "").replace('"', "")
 
 
 def generate_suggestion(percent):
