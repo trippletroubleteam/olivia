@@ -23,12 +23,15 @@ def olivia():
 
     depression_score = model4.test(model, text)
 
-    return {
+    data = {
         "olivia": generate_completion(therapy_prompt(text)),
         "depression_score": depression_score/200,
         "sentence": text,
         "suggestion": generate_completion(counselor_prompt + text)
         }
+
+    print(data)
+    return data
 
 
 def generate_completion(prompt, *, temperature=0.6, max_tokens=512, **kwargs):
