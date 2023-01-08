@@ -20,12 +20,13 @@ from keras.models import load_model
 from sklearn.utils import shuffle
 from transformers import *
 from transformers import BertTokenizer, TFBertModel, BertConfig
+from pathlib import Path
 
 #Parameters with the best results
 loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 metric = tf.keras.metrics.SparseCategoricalAccuracy('accuracy')
 optimizer = tf.keras.optimizers.Adam(learning_rate=2e-5,epsilon=1e-08)
-model_save_path='./model2/bert_model.h5'
+model_save_path='./models/bert_model.h5'
 #Tokenizer to convert strings of text into embeddings that can be processed by a neural net, including numerical representations of the word, it's place in the sentence, and how it relates to other nearby words
 bert_tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 labels = ["Not Depressed", "Depressed"]
@@ -100,6 +101,11 @@ def train():
 
 
 def load_model():
+    my_file = Path(model_save_path)
+    if not my_file.is_file():
+        print("File does not exist, training model. This may take a while...")
+        train()
+
     trained_model = TFBertForSequenceClassification.from_pretrained('bert-base-uncased',num_labels=2)
     trained_model.compile(loss=loss,optimizer=optimizer, metrics=[metric])
     trained_model.load_weights(model_save_path)
@@ -107,13 +113,8 @@ def load_model():
 
 
 def test(trained_model, sentence):
-    #sentence = "Today was a great day, I love my friends and my family and everyone around me"
     sentence = preprocess_sentence(sentence)
     sentence = bert_tokenizer.encode_plus(sentence, add_special_tokens=True, max_length=256, padding="max_length", return_tensors="tf")
-    #preprocessed_sentence = np.array(preprocessed_sentence).reshape(1, -1)
-
-    # Create the attention mask
-    #attention_mask = np.ones((1, 64))
 
     # Make the prediction
     prediction = trained_model.predict([tf.cast(sentence.input_ids, tf.int64), tf.cast(sentence.attention_mask, tf.int64)])
