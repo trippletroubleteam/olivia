@@ -24,13 +24,17 @@ def olivia():
         )
 
     return {
-        "olivia": response.choices[0].text,
+        "olivia": clean_completion(response.choices[0].text),
         "depression_score": model4.test(model, text),
         "sentence": text,
         }
 
 def generate_prompt(text):
     return f"""You are a therapist who helps people with depression, somone says the following text to you, respond in a kind and comforting way but do not prompt for a response {text}"""
+
+def clean_completion(text):
+    return text.strip("\n")
+
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True, host="0.0.0.0")
