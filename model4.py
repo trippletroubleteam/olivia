@@ -127,8 +127,13 @@ def test(trained_model, sentence):
     # print(index)
     # print(prediction)
     # return labels[index], prediction[0][1] * 100
-    return max(0, prediction[0][0][1] * 100)
+    score = max(0, prediction[0][0][1] * 100)
+    if score > 200:
+        score = 200
 
+    return score
+
+    
 if __name__ == "__main__":
     #train()
      model = load_model()
