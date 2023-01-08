@@ -1,13 +1,9 @@
+import utils
+from pathlib import Path
 import streamlit as st
 import os
 if st.secrets.get("OPENAI_KEY"):
     os.environ["OPENAI_KEY"] = st.secrets['OPENAI_KEY']
-import model4
-import nltk
-nltk.download("stopwords")
-from app import generate_completion, therapy_prompt, counselor_prompt
-import utils
-from pathlib import Path
 
 file = Path("./model2/bert_model.h5")
 if not file.is_file():
@@ -15,7 +11,13 @@ if not file.is_file():
     os.mkdir("model2")
     downloadFile("bert_model.h5", output_path="./model2/bert_model.h5")
 
+import model4
+from app import generate_completion, therapy_prompt, counselor_prompt
+import nltk
+
+nltk.download("stopwords")
 model = model4.load_model()
+
 
 st.title("UnisonAI NLP Analysis of Conversations")
 
