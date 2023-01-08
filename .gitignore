@@ -131,3 +131,4 @@ models/
 tensorboard_data/
 bert_model.h5
 credentials.json
+secrets.toml

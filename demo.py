@@ -11,6 +11,7 @@ from pathlib import Path
 
 file = Path("./model2/bert_model.h5")
 if not file.is_file():
+    print("File does not exist, downloading")
     os.mkdir("model2")
     downloadFile("bert_model.h5", output_path="./model2/bert_model.h5")
 
