@@ -5,7 +5,7 @@ if st.secrets.get("OPENAI_KEY"):
 import model4
 import nltk
 nltk.download("stopwords")
-from app import *
+from app import generate_completion, therapy_prompt, counselor_prompt
 import utils
 from pathlib import Path
 
@@ -36,4 +36,4 @@ if text:
 
     st.subheader("Parent Suggestion:")
 
-    st.write(generate_completion(counselor_prompt + text))
+    st.write(generate_completion(counselor_prompt(text)))

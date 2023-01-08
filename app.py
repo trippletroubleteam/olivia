@@ -12,7 +12,6 @@ model = model4.load_model()
 congrats_prompt = "In one concise sentence, congratulate a parent on how well they are raising their child."
 help_prompt = "You are a smart family counselor tasked with advising a parent to check up on their child who is not doing too well in one concise sentence."
 danger_prompt = "You are tasked with alerting and explaining to a parent that their child is in danger of hurting themselves and must seek help in one concise sentence."
-counselor_prompt = "You are a smart family counselor and a child has just said the following to you, in one concise sentence tell the parents how they should react based on this information. "
 
 @app.route("/olivia")
 def olivia():
@@ -27,7 +26,7 @@ def olivia():
         "olivia": generate_completion(therapy_prompt(text)),
         "depression_score": depression_score/200,
         "sentence": text,
-        "suggestion": generate_completion(counselor_prompt + text)
+        "suggestion": generate_completion(counselor_prompt(text))
         }
 
     print(data)
@@ -48,6 +47,10 @@ def generate_completion(prompt, *, temperature=0.6, max_tokens=512, **kwargs):
 
 def therapy_prompt(text):
     return f"You are a smart therapist who helps people with depression, somone says the following to you, respond in a kind and comforting way but do not prompt for a response {text}"
+
+
+def counselor_prompt(text):
+    return f"You are a smart family counselor and a child has just said the following to you, in one concise sentence tell the parents how they should react based on this information. {text}"
 
 
 def clean_completion(text):

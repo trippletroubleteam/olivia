@@ -60,7 +60,7 @@ def train():
 
     print(data.head())
 
-    #Prepare data, set aside
+    #Prepare data
     data=data.reset_index(drop=True)
     data = shuffle(data)
     print('Available labels: ',data.is_depression.unique())
@@ -73,6 +73,7 @@ def train():
     sentences = data['clean_text']
     labels = data['is_depression']
 
+    #Tokenize data into input ids and attention masks
     input_ids=[]
     attention_masks=[]
 
@@ -85,6 +86,7 @@ def train():
     attention_masks=np.array(attention_masks)
     labels=np.array(labels)
 
+    #set aside data for validation
     train_inp,val_inp,train_label,val_label,train_mask,val_mask=train_test_split(input_ids,labels,attention_masks,test_size=0.2)
     print('Train inp shape {} Val input shape {}\nTrain label shape {} Val label shape {}\nTrain attention mask shape {} Val attention mask shape {}'.format(train_inp.shape,val_inp.shape,train_label.shape,val_label.shape,train_mask.shape,val_mask.shape))
 
@@ -94,7 +96,7 @@ def train():
 
     print('\nBert Model',bert_model.summary())
 
-
+    #train model
     bert_model.compile(loss=loss,optimizer=optimizer,metrics=[metric])
 
     history=bert_model.fit([train_inp,train_mask],train_label,batch_size=32,epochs=4,validation_data=([val_inp,val_mask],val_label),callbacks=callbacks)
@@ -103,9 +105,8 @@ def train():
 def load_model():
     my_file = Path(model_save_path)
     if not my_file.is_file():
-        print("File does not exist, training model. This may take a while...")
-        train()
-
+        raise FileNotFoundError(model_save_path)
+        
     trained_model = TFBertForSequenceClassification.from_pretrained('bert-base-uncased',num_labels=2)
     trained_model.compile(loss=loss,optimizer=optimizer, metrics=[metric])
     trained_model.load_weights(model_save_path)
