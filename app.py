@@ -9,9 +9,9 @@ openai.api_key = os.getenv("OPENAI_KEY")
 app = Flask(__name__)
 model = model4.load_model()
 
-congrarts_prompt = "Congratulate a parent on how well they are raising their child"
-help_prompt = "You are a smart family counselor tasked with advising a parent to check up on their child who is not doing too well"
-danger_prompt = "You are tasked with alerting and explaining to a parent that their child is in danger of hurting themselves and must seek help"
+congrarts_prompt = "In one concise sentence, congratulate a parent on how well they are raising their child."
+help_prompt = "You are a smart family counselor tasked with advising a parent to check up on their child who is not doing too well in one concise sentence."
+danger_prompt = "You are tasked with alerting and explaining to a parent that their child is in danger of hurting themselves and must seek help in one concise sentence."
 
 
 @app.route("/olivia")
